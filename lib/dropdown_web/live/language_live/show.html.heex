@@ -1,0 +1,32 @@
+<.header>
+  Language <%= @language.id %>
+  <:subtitle>This is a language record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/language/#{@language}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit language</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @language.name %></:item>
+  <:item title="Code"><%= @language.code %></:item>
+</.list>
+
+<.back navigate={~p"/language"}>Back to language</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="language-modal"
+  show
+  on_cancel={JS.patch(~p"/language/#{@language}")}
+>
+  <.live_component
+    module={DropdownWeb.LanguageLive.FormComponent}
+    id={@language.id}
+    title={@page_title}
+    action={@live_action}
+    language={@language}
+    patch={~p"/language/#{@language}"}
+  />
+</.modal>

@@ -1,0 +1,47 @@
+<.header>
+  Listing Language
+  <:actions>
+    <.link patch={~p"/language/new"}>
+      <.button>Select Language</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="language"
+  rows={@streams.language_collection}
+  row_click={fn {_id, language} -> JS.navigate(~p"/language/#{language}") end}
+>
+  <:col :let={{_id, language}} label="Name"><%= language.name %></:col>
+  <:col :let={{_id, language}} label="Code"><%= language.code %></:col>
+  <:action :let={{_id, language}}>
+    <div class="sr-only">
+      <.link navigate={~p"/language/#{language}"}>Show</.link>
+    </div>
+    <.link patch={~p"/language/#{language}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, language}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: language.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="language-modal"
+  show
+  on_cancel={JS.patch(~p"/language")}
+>
+  <.live_component
+    module={DropdownWeb.LanguageLive.FormComponent}
+    id={@language.id || :new}
+    title={@page_title}
+    action={@live_action}
+    language={@language}
+    patch={~p"/language"}
+  />
+</.modal>
